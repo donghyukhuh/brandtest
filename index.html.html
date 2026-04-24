@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>브랜드 원형 진단 | Brand Archetype Test</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:#f1efe8;color:#2c2c2a;min-height:100vh;display:flex;justify-content:center;padding:2rem 1rem;}
+#app{width:100%;max-width:680px;padding:2rem 0;}
+
+/* typography */
+h1{font-size:22px;font-weight:600;margin:0 0 1rem;color:#1a1a18;}
+.badge{font-size:12px;color:#888780;margin:0 0 .4rem;letter-spacing:.02em;}
+
+/* card */
+.card{background:#fff;border:1px solid #d3d1c7;border-radius:14px;overflow:hidden;margin-bottom:1rem;}
+.card-body{padding:1.25rem 1.5rem;}
+.card-foot{padding:.75rem 1.5rem;background:#f7f6f0;border-top:1px solid #e8e6df;font-size:13px;color:#888780;line-height:1.6;}
+
+/* info box */
+.info-box{background:#e9f2fc;border:1px solid #b5d4f4;border-radius:10px;padding:.9rem 1.1rem;margin-bottom:1.25rem;}
+.info-box p{font-size:14px;color:#185fa5;line-height:1.7;}
+.info-box .meta{font-size:12px;color:#378add;margin:.4rem 0 0;}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 22px;font-size:14px;font-family:inherit;cursor:pointer;border-radius:8px;transition:all .15s;}
+.btn-primary{background:#2c2c2a;color:#fff;border:none;}
+.btn-primary:hover{background:#444441;}
+.btn-outline{background:#fff;color:#2c2c2a;border:1px solid #b4b2a9;}
+.btn-outline:hover{background:#f7f6f0;}
+.btn:disabled{opacity:.3;cursor:not-allowed;}
+
+/* progress */
+.prog-wrap{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;}
+.prog-track{flex:1;height:4px;background:#d3d1c7;border-radius:2px;}
+.prog-fill{height:100%;background:#2c2c2a;border-radius:2px;transition:width .3s;}
+.prog-label{font-size:12px;color:#888780;white-space:nowrap;min-width:50px;text-align:right;}
+
+/* question */
+.q-num{font-size:11px;color:#b4b2a9;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem;}
+.q-text{font-size:16px;color:#2c2c2a;line-height:1.75;}
+
+/* likert */
+.likert-row{display:flex;gap:6px;margin-bottom:.5rem;}
+.lbtn{
+  flex:1;padding:10px 6px;font-size:13px;cursor:pointer;
+  background:#f7f6f0;border:1px solid #d3d1c7;border-radius:8px;
+  color:#888780;text-align:center;font-family:inherit;
+  transition:all .15s;line-height:1.3;
+}
+.lbtn:hover{background:#fff;color:#2c2c2a;border-color:#888780;}
+.lbtn.sel{background:#e9f2fc;color:#185fa5;border-color:#85b7eb;font-weight:600;}
+.axis{display:flex;justify-content:space-between;font-size:11px;color:#b4b2a9;margin-bottom:1.25rem;}
+.nav-row{display:flex;gap:8px;}
+
+/* result top card */
+.arc-avatar{
+  width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;flex-shrink:0;
+}
+.arc-name{font-size:17px;font-weight:600;color:#2c2c2a;margin-bottom:2px;}
+.arc-score{font-size:13px;color:#888780;}
+.arc-desc{font-size:14px;color:#5f5e5a;line-height:1.7;margin-top:12px;}
+
+/* radar chart */
+.chart-wrap{position:relative;width:100%;height:480px;}
+
+/* top3 cards */
+.t3-card{background:#fff;border:1px solid #e8e6df;border-radius:12px;padding:1rem 1.25rem;margin-bottom:.75rem;}
+.t3-title-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+.t3-title{font-size:14px;font-weight:600;color:#2c2c2a;}
+.t3-kw{font-size:12px;color:#b4b2a9;font-weight:400;margin-left:4px;}
+.t3-score{font-size:12px;color:#888780;}
+.t3-desc{font-size:13px;color:#5f5e5a;line-height:1.6;margin-bottom:6px;}
+.t3-shadow{font-size:12px;color:#b4b2a9;line-height:1.6;}
+.t3-shadow strong{color:#888780;font-weight:600;}
+
+/* section label */
+.sec-label{font-size:13px;font-weight:700;color:#888780;letter-spacing:.04em;margin:1.5rem 0 .75rem;}
+
+footer{margin-top:2rem;padding-top:1.25rem;border-top:1px solid #d3d1c7;font-size:12px;color:#b4b2a9;text-align:center;line-height:1.8;}
+
+/* group cards */
+.group-card{background:#fff;border:1px solid #e8e6df;border-radius:12px;padding:1rem 1.25rem;margin-bottom:.75rem;}
+.group-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.group-tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.04em;white-space:nowrap;}
+.group-title{font-size:15px;font-weight:600;color:#2c2c2a;}
+.group-desc{font-size:13px;color:#5f5e5a;line-height:1.65;margin-bottom:12px;}
+.group-members{display:flex;flex-wrap:wrap;gap:6px;}
+.group-chip{font-size:12px;padding:4px 11px;border-radius:20px;border:1px solid;font-weight:500;}
+
+/* warn flash */
+@keyframes flash{0%,100%{border-color:#d3d1c7;}50%{border-color:#e24b4a;outline:2px solid #f09595;}}
+.warn{animation:flash .7s ease;}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ───── INTRO ───── -->
+<div id="intro">
+  <p class="badge">Brand Archetype Assessment</p>
+  <h1>나는 어떤 브랜드 원형인가?</h1>
+  <p style="font-size:15px;color:#5f5e5a;line-height:1.75;margin:0 0 .6rem;">칼 융(Carl Jung)의 심리학에 기반한 <strong style="font-weight:600;">12가지 브랜드 원형</strong> 진단입니다.<br>36개 문항에 솔직하게 응답하면 나의 브랜드 성격 유형과 핵심 특성을 확인할 수 있습니다.</p>
+  <p style="font-size:13px;color:#b4b2a9;margin:0 0 1.25rem;">제작: (주)로셜리티 허동혁 대표</p>
+  <div class="info-box">
+    <p><strong style="font-weight:600;">응답 방법</strong></p>
+    <p>각 문항을 읽고 5점 척도로 평가하세요. 정답은 없습니다. 지금 자신의 모습에 가장 솔직한 답을 선택하면 자동으로 다음 문항으로 넘어갑니다.</p>
+    <p class="meta">총 36문항 · 소요 시간 약 10분</p>
+  </div>
+  <button class="btn btn-primary" onclick="startQuiz()">진단 시작하기 →</button>
+</div>
+
+<!-- ───── QUESTION ───── -->
+<div id="question" style="display:none;">
+  <div class="prog-wrap">
+    <div class="prog-track"><div class="prog-fill" id="pbar" style="width:0%;"></div></div>
+    <span class="prog-label" id="ptext"></span>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <p class="q-num" id="qnum"></p>
+      <p class="q-text" id="qtext"></p>
+    </div>
+    <div style="padding:1rem 1.5rem 0;">
+      <div class="likert-row" id="lrow"></div>
+      <div class="axis"><span>전혀 아니다</span><span>매우 그렇다</span></div>
+    </div>
+    <div class="card-foot">
+      <div class="nav-row">
+        <button class="btn btn-outline" id="bprev" onclick="prevQ()">← 이전</button>
+        <button class="btn btn-outline" id="bnext" onclick="nextQ()">다음 →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ───── RESULTS ───── -->
+<div id="results" style="display:none;">
+  <p class="badge">진단 결과</p>
+  <h1 id="rtitle"></h1>
+
+  <!-- top card -->
+  <div class="card" id="topcard"></div>
+
+  <!-- chart -->
+  <p class="sec-label">12가지 원형 방사형 분포</p>
+  <div class="card"><div class="card-body"><div class="chart-wrap"><canvas id="achart"></canvas></div></div></div>
+
+  <!-- top3 -->
+  <p class="sec-label">상위 3개 원형 상세 해석</p>
+  <div id="t3cards"></div>
+
+  <!-- 4 groups -->
+  <p class="sec-label">4가지 원형 그룹 분류</p>
+  <div id="group-cards">
+
+    <div class="group-card" style="border-left:4px solid #BA7517;">
+      <div class="group-header">
+        <span class="group-tag" style="background:#BA751720;color:#BA7517;">Freedom</span>
+        <p class="group-title">자유(Freedom)를 추구하는 원형</p>
+      </div>
+      <p class="group-desc">타겟 고객의 '자유'에 대한 욕구를 자극하며, 모험과 발견을 강조합니다.</p>
+      <div class="group-members">
+        <span class="group-chip" style="background:#BA751718;color:#8a5510;border-color:#BA751740;">탐험가 (The Explorer)</span>
+        <span class="group-chip" style="background:#378ADD18;color:#185fa5;border-color:#378ADD40;">현자 (The Sage)</span>
+        <span class="group-chip" style="background:#1D9E7518;color:#0f6e56;border-color:#1D9E7540;">순수주의자 (The Innocent)</span>
+      </div>
+    </div>
+
+    <div class="group-card" style="border-left:4px solid #7F77DD;">
+      <div class="group-header">
+        <span class="group-tag" style="background:#7F77DD20;color:#534AB7;">Ego / Self</span>
+        <p class="group-title">에고(Ego/Self)를 추구하는 원형</p>
+      </div>
+      <p class="group-desc">고객의 '자기표현'과 '특별함'을 만족시키며, 혁신과 자신감을 강조합니다.</p>
+      <div class="group-members">
+        <span class="group-chip" style="background:#9B59B618;color:#6c3483;border-color:#9B59B640;">창조자 (The Creator)</span>
+        <span class="group-chip" style="background:#E24B4A18;color:#a32d2d;border-color:#E24B4A40;">영웅 (The Hero)</span>
+        <span class="group-chip" style="background:#7F77DD18;color:#534AB7;border-color:#7F77DD40;">마술사 (The Magician)</span>
+      </div>
+    </div>
+
+    <div class="group-card" style="border-left:4px solid #D4537E;">
+      <div class="group-header">
+        <span class="group-tag" style="background:#D4537E20;color:#993556;">Social</span>
+        <p class="group-title">소셜(Social)을 추구하는 원형</p>
+      </div>
+      <p class="group-desc">고객의 '관계'와 '소속감'을 강화하며, 즐거움과 사랑을 강조합니다.</p>
+      <div class="group-members">
+        <span class="group-chip" style="background:#D4537E18;color:#993556;border-color:#D4537E40;">연인 (The Lover)</span>
+        <span class="group-chip" style="background:#EF9F2718;color:#854f0b;border-color:#EF9F2740;">익살꾼 (The Jester)</span>
+        <span class="group-chip" style="background:#88878018;color:#444441;border-color:#88878040;">친근한 이웃 (The Everyman)</span>
+      </div>
+    </div>
+
+    <div class="group-card" style="border-left:4px solid #185FA5;">
+      <div class="group-header">
+        <span class="group-tag" style="background:#185FA520;color:#185FA5;">Order</span>
+        <p class="group-title">질서(Order)를 추구하는 원형</p>
+      </div>
+      <p class="group-desc">세상에 '구조'와 '안정'을 제공하며, 전문성과 통제력을 강조합니다.</p>
+      <div class="group-members">
+        <span class="group-chip" style="background:#185FA518;color:#185FA5;border-color:#185FA540;">통치자 (The Ruler)</span>
+        <span class="group-chip" style="background:#63992218;color:#3b6d11;border-color:#63992240;">보호자 (The Caregiver)</span>
+        <span class="group-chip" style="background:#D85A3018;color:#993c1d;border-color:#D85A3040;">무법자 (The Outlaw/Rebel)</span>
+      </div>
+    </div>
+
+  </div>
+
+  <button class="btn btn-outline" onclick="restart()">↺ 다시 진단하기</button>
+
+  <footer>
+    본 진단 도구는 칼 융의 원형 심리학과<br>마거릿 마크·캐롤 피어슨의 브랜드 원형 모델(Margaret Mark & Carol S. Pearson)을 기반으로 제작되었습니다.<br>
+    결과는 워크숍 참고용이며 전문 브랜드 컨설팅을 대체하지 않습니다.
+  </footer>
+</div>
+
+</div><!-- #app -->
+
+<script>
+// roundRect 폴리필 (구형 브라우저 대응)
+if(!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+    this.beginPath();this.moveTo(x+r,y);
+    this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);
+    this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);
+    this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);
+    this.closePath();return this;
+  };
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const ARC=[
+  {id:'innocent', name:'순수주의자', kw:'The Innocent', color:'#1D9E75',
+   desc:'낙관주의와 순수함으로 세상을 바라봅니다. 선함과 단순함을 믿으며, 희망과 긍정의 에너지로 주변을 밝힙니다. 브랜드로서는 신뢰, 청결, 행복을 상징합니다.',
+   shadow:'지나친 이상주의로 현실을 회피하거나, 순진함이 취약점이 될 수 있습니다.'},
+  {id:'explorer', name:'탐험가', kw:'The Explorer', color:'#BA7517',
+   desc:'자유와 발견을 갈망합니다. 자신만의 길을 개척하며 정해진 틀 밖에서 진정한 자아를 찾습니다. 브랜드로서는 모험, 자유, 진정성을 상징합니다.',
+   shadow:'목적 없는 방랑이 되거나, 안정적 관계 구축을 어렵게 만들 수 있습니다.'},
+  {id:'sage', name:'현자', kw:'The Sage', color:'#378ADD',
+   desc:'지식과 진실을 추구합니다. 깊은 이해와 통찰로 세상을 해석하며, 배움과 공유를 통해 기여합니다. 브랜드로서는 전문성, 신뢰, 지혜를 상징합니다.',
+   shadow:'지나친 분석이 행동을 지연시키거나 차가운 인상을 줄 수 있습니다.'},
+  {id:'hero', name:'영웅', kw:'The Hero', color:'#E24B4A',
+   desc:'도전을 통해 성장합니다. 역경을 극복하고 탁월함을 증명하며 세상을 더 나은 곳으로 만들기 위해 앞장섭니다. 브랜드로서는 용기, 성취, 변화를 상징합니다.',
+   shadow:'승리에 집착하거나 스스로와 타인에게 지나치게 높은 기준을 요구할 수 있습니다.'},
+  {id:'outlaw', name:'무법자', kw:'The Outlaw/Rebel', color:'#D85A30',
+   desc:'혁명과 해방을 추구합니다. 부당한 규칙에 도전하고 기존 질서를 파괴함으로써 변화를 이끕니다. 브랜드로서는 파격, 자유, 반권위를 상징합니다.',
+   shadow:'파괴가 목적 없이 이루어지거나 불필요한 반항이 신뢰를 잃게 만들 수 있습니다.'},
+  {id:'magician', name:'마술사', kw:'The Magician', color:'#7F77DD',
+   desc:'가능성을 현실로 만듭니다. 비전을 그리고 주변을 변화시키는 촉매 역할을 하며, 불가능해 보이는 것을 가능하게 만드는 힘이 있습니다.',
+   shadow:'조종이나 과장된 약속으로 신뢰를 잃을 위험이 있습니다.'},
+  {id:'everyman', name:'친근한 이웃', kw:'The Everyman', color:'#888780',
+   desc:'공감과 연결을 중시합니다. 꾸밈없이 진정성 있게 어울리며 모두가 소속감을 느끼는 공동체를 만듭니다. 브랜드로서는 친근함, 실용성, 공정함을 상징합니다.',
+   shadow:'두드러지기를 두려워하거나 개성 없는 존재로 묻힐 위험이 있습니다.'},
+  {id:'lover', name:'연인', kw:'The Lover', color:'#D4537E',
+   desc:'아름다움과 깊은 연결을 추구합니다. 관계의 친밀함을 통해 의미를 찾으며, 감성적 경험을 특별하게 만드는 재능이 있습니다.',
+   shadow:'집착이나 타인의 기대에 지나치게 맞추려는 경향이 나타날 수 있습니다.'},
+  {id:'jester', name:'익살꾼', kw:'The Jester', color:'#EF9F27',
+   desc:'기쁨과 유머로 순간을 밝힙니다. 삶의 아이러니를 포착하고 웃음을 통해 진실을 전달하며 분위기를 전환합니다.',
+   shadow:'중요한 상황에서 진지함이 결여되거나 가볍게 여겨질 수 있습니다.'},
+  {id:'caregiver', name:'보호자', kw:'The Caregiver', color:'#639922',
+   desc:'타인의 필요를 우선합니다. 따뜻한 보살핌으로 사람들을 지원하고 공동체의 안녕을 위해 헌신합니다. 브랜드로서는 신뢰, 안전, 따뜻함을 상징합니다.',
+   shadow:'자신을 돌보지 못하거나 지나친 희생으로 번아웃이 올 수 있습니다.'},
+  {id:'ruler', name:'통치자', kw:'The Ruler', color:'#185FA5',
+   desc:'질서와 리더십을 통해 성과를 만듭니다. 책임감 있게 기준을 세우고 체계적으로 조직을 이끌며 장기적 안정을 추구합니다.',
+   shadow:'통제 욕구가 지나쳐 권위적으로 보이거나 변화에 경직될 수 있습니다.'},
+  {id:'creator', name:'창조자', kw:'The Creator', color:'#9B59B6',
+   desc:'독창적 표현에서 의미를 찾습니다. 새로운 것을 만들거나 기존 것을 재해석하며, 비전을 실체로 구현하는 과정에서 깊은 만족을 느낍니다.',
+   shadow:'완벽주의가 실행을 막거나 실용성보다 표현에 치우칠 수 있습니다.'},
+];
+
+const QS=[
+  {a:'innocent', t:'나는 세상이 본질적으로 선하다고 믿으며, 긍정적인 면을 먼저 보려 한다.'},
+  {a:'innocent', t:'복잡함보다 단순하고 순수한 것에서 더 큰 가치를 발견한다.'},
+  {a:'innocent', t:'기대와 희망을 잃지 않고 새로운 시작을 꿈꾸는 것이 즐겁다.'},
+  {a:'explorer', t:'정해진 틀보다 스스로 길을 개척하는 것이 더 나답다는 느낌을 준다.'},
+  {a:'explorer', t:'새로운 장소, 사람, 경험을 추구하는 것이 삶의 중요한 원동력이다.'},
+  {a:'explorer', t:'안정보다 자유를, 편안함보다 발견의 설렘을 더 중요하게 여긴다.'},
+  {a:'sage', t:'충분히 이해하고 분석하지 않으면 판단이나 결정을 내리기 어렵다.'},
+  {a:'sage', t:'지식과 통찰을 나누는 것이 내가 세상에 기여하는 핵심 방식이다.'},
+  {a:'sage', t:'진실과 정확성은 나에게 타협할 수 없는 중요한 가치다.'},
+  {a:'hero', t:'어려운 도전일수록 더 강한 의지와 에너지가 솟아오른다.'},
+  {a:'hero', t:'결과로 스스로를 증명하고, 탁월함을 추구하는 것이 나의 동력이다.'},
+  {a:'hero', t:'누군가 힘든 상황에 처하면, 내가 나서서 해결해야 한다는 책임감을 느낀다.'},
+  {a:'outlaw', t:'관습적인 방식이 잘못되었다고 느낄 때, 과감히 이를 뒤집으려는 충동을 느낀다.'},
+  {a:'outlaw', t:'기존 권위나 규칙이 정당하지 않다면, 이를 따르기보다 도전하는 것이 옳다.'},
+  {a:'outlaw', t:'변화를 이끌기 위해 불편함이나 갈등을 감수하는 것을 두려워하지 않는다.'},
+  {a:'magician', t:'불가능해 보이는 것을 가능하게 만드는 순간에서 큰 보람을 느낀다.'},
+  {a:'magician', t:'변화와 전환을 이끄는 것이 내 역할이라는 강한 확신이 있다.'},
+  {a:'magician', t:'나는 비전을 그리고, 주변 사람들이 그 비전을 믿게 만드는 능력이 있다.'},
+  {a:'everyman', t:'특별히 주목받기보다, 자연스럽게 어울리고 연결되는 것을 더 편안하게 여긴다.'},
+  {a:'everyman', t:'실용적이고 현실적인 접근 방식이 화려한 이상보다 신뢰할 수 있다.'},
+  {a:'everyman', t:'사람들이 공감할 수 있는 솔직하고 진정성 있는 모습이 가장 중요하다.'},
+  {a:'lover', t:'아름다움, 감성, 깊은 연결이 삶을 의미 있게 만드는 핵심 요소다.'},
+  {a:'lover', t:'나는 사람들이 특별하게 느낄 수 있도록 세심하게 배려하는 편이다.'},
+  {a:'lover', t:'열정적인 관계와 깊은 친밀감이 내 삶에서 중요한 자리를 차지한다.'},
+  {a:'jester', t:'유머와 재치는 어떤 상황도 더 나아지게 만드는 강력한 도구다.'},
+  {a:'jester', t:'삶은 너무 진지하게만 살기엔 너무 짧다고 생각한다.'},
+  {a:'jester', t:'사람들이 편안하게 웃을 수 있는 분위기를 만드는 것이 즐겁다.'},
+  {a:'caregiver', t:'다른 사람의 필요와 안녕이 나의 우선순위에 자주 자리한다.'},
+  {a:'caregiver', t:'누군가의 아픔이나 어려움을 그냥 지나치지 못하는 편이다.'},
+  {a:'caregiver', t:'나의 성공은 내가 돌보는 사람들의 성공과 연결되어 있다.'},
+  {a:'ruler', t:'혼란스러운 상황에서 구조와 질서를 잡는 역할을 자연스럽게 맡는다.'},
+  {a:'ruler', t:'책임 있는 리더십과 체계적인 운영이 장기적 성공의 핵심이라고 믿는다.'},
+  {a:'ruler', t:'높은 기준을 세우고 그것을 유지하는 것이 나와 조직의 품격을 결정한다.'},
+  {a:'creator', t:'새로운 것을 만들거나 기존 것을 재해석할 때 가장 살아있다는 느낌이 든다.'},
+  {a:'creator', t:'나는 아이디어를 실체로 만드는 과정에서 큰 만족을 느낀다.'},
+  {a:'creator', t:'완전히 독창적이고 의미 있는 것을 세상에 남기고 싶다는 욕구가 강하다.'},
+];
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+let qs=[],ans=[],cur=0,myChart=null;
+
+function show(id){['intro','question','results'].forEach(s=>{document.getElementById(s).style.display=s===id?'block':'none';});}
+
+function startQuiz(){
+  qs=shuffle(QS);ans=new Array(qs.length).fill(null);cur=0;
+  show('question');renderQ();
+}
+
+function renderQ(){
+  const q=qs[cur];
+  document.getElementById('qnum').textContent='Q '+(cur+1)+' / '+qs.length;
+  document.getElementById('qtext').textContent=q.t;
+  document.getElementById('pbar').style.width=Math.round((cur/qs.length)*100)+'%';
+  document.getElementById('ptext').textContent=Math.round((cur/qs.length)*100)+'%';
+  const labs=['전혀\n아니다','아닌\n편이다','보통\n이다','그런\n편이다','매우\n그렇다'];
+  const row=document.getElementById('lrow');
+  row.innerHTML='';row.classList.remove('warn');
+  labs.forEach((lb,i)=>{
+    const b=document.createElement('button');
+    b.className='lbtn'+(ans[cur]===i+1?' sel':'');
+    b.innerHTML=lb.replace('\n','<br>');
+    b.onclick=()=>pick(i+1);
+    row.appendChild(b);
+  });
+  document.getElementById('bprev').disabled=cur===0;
+  const bn=document.getElementById('bnext');
+  if(cur===qs.length-1){bn.textContent='결과 보기 →';bn.className='btn btn-primary';}
+  else{bn.textContent='다음 →';bn.className='btn btn-outline';}
+}
+
+function pick(v){
+  ans[cur]=v;
+  document.querySelectorAll('.lbtn').forEach((b,i)=>b.classList.toggle('sel',i+1===v));
+  setTimeout(()=>{if(cur<qs.length-1){cur++;renderQ();}},260);
+}
+
+function prevQ(){if(cur>0){cur--;renderQ();}}
+
+function nextQ(){
+  if(ans[cur]===null){
+    const row=document.getElementById('lrow');
+    row.classList.add('warn');
+    return;
+  }
+  if(cur<qs.length-1){cur++;renderQ();}
+  else showResults();
+}
+
+function scores(){
+  const s={};ARC.forEach(a=>s[a.id]=0);
+  qs.forEach((q,i)=>{if(ans[i]!==null)s[q.a]+=ans[i];});
+  return s;
+}
+
+function showResults(){
+  const sc=scores();
+  const sorted=ARC.map(a=>({...a,score:sc[a.id]})).sort((a,b)=>b.score-a.score);
+  const top=sorted[0];
+  show('results');
+  document.getElementById('rtitle').textContent='주요 원형: '+top.name+' ('+top.kw+')';
+
+  // top card
+  document.getElementById('topcard').innerHTML=`
+    <div class="card-body">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+        <div class="arc-avatar" style="background:${top.color}22;border:2px solid ${top.color}88;">
+          <span style="color:${top.color};font-size:13px;">${top.kw.substring(0,3).toUpperCase()}</span>
+        </div>
+        <div>
+          <p class="arc-name">${top.name}</p>
+          <p class="arc-score">${top.score}점 / 15점 만점</p>
+        </div>
+      </div>
+      <p class="arc-desc">${top.desc}</p>
+    </div>
+    <div class="card-foot">그림자 측면: ${top.shadow}</div>`;
+
+  // 레이더 차트 - 4그룹 순서로 축 배치 (Freedom→Ego→Social→Order, 각 3축씩)
+  // 축 각도: 0°(상단)부터 30°씩 시계방향
+  // Freedom(0°~60°, 상단우) / Ego(90°~150°, 하단우) / Social(180°~240°, 하단좌) / Order(270°~330°, 상단좌)
+  const RADAR_IDS = [
+    'innocent','explorer','sage',       // Freedom  (축 0,1,2 → 0°,30°,60°)
+    'hero','magician','creator',        // Ego      (축 3,4,5 → 90°,120°,150°)
+    'everyman','lover','jester',        // Social   (축 6,7,8 → 180°,210°,240°)
+    'caregiver','ruler','outlaw',       // Order    (축 9,10,11 → 270°,300°,330°)
+  ];
+  const arcMap = {};ARC.forEach(a=>arcMap[a.id]=a);
+  const radarLabels = RADAR_IDS.map(id=>arcMap[id].name);
+  const radarData   = RADAR_IDS.map(id=>sc[id]);
+  const topColor    = top.color;
+  const maxVal      = Math.max(...radarData);
+
+  // 4분면 라벨을 캔버스에 직접 그리는 플러그인
+  const GROUPS = [
+    {label:'Freedom', sub:'자유 추구', angle:30,  color:'#BA7517', bg:'rgba(186,117,23,0.1)'},
+    {label:'Ego / Self', sub:'에고 추구', angle:120, color:'#7F77DD', bg:'rgba(127,119,221,0.1)'},
+    {label:'Social', sub:'소셜 추구', angle:210, color:'#D4537E', bg:'rgba(212,83,126,0.1)'},
+    {label:'Order', sub:'질서 추구', angle:300, color:'#185FA5', bg:'rgba(24,95,165,0.1)'},
+  ];
+
+  const quadPlugin = {
+    id:'quadLabels',
+    afterDraw(chart){
+      const ctx = chart.ctx;
+      const ca  = chart.chartArea;
+      const cx  = (ca.left + ca.right) / 2;
+      const cy  = (ca.top  + ca.bottom) / 2;
+      const r   = Math.min(ca.right - cx, cy - ca.top) * 0.68;
+
+      GROUPS.forEach(g=>{
+        const rad = g.angle * Math.PI / 180;
+        const x   = cx + r * Math.sin(rad);
+        const y   = cy - r * Math.cos(rad);
+
+        // pill background
+        const pw = 76, ph = 36;
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(x - pw/2, y - ph/2, pw, ph, 6);
+        ctx.fillStyle = g.bg;
+        ctx.fill();
+        ctx.strokeStyle = g.color + '60';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // label text
+        ctx.fillStyle = g.color;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = 'bold 11px "Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+        ctx.fillText(g.label, x, y - 7);
+        ctx.font = '10px "Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+        ctx.fillStyle = g.color + 'CC';
+        ctx.fillText(g.sub, x, y + 7);
+        ctx.restore();
+      });
+    }
+  };
+
+  if(myChart){myChart.destroy();}
+  myChart=new Chart(document.getElementById('achart'),{
+    type:'radar',
+    plugins:[quadPlugin],
+    data:{
+      labels: radarLabels,
+      datasets:[{
+        label:'점수',
+        data: radarData,
+        backgroundColor: topColor+'2A',
+        borderColor: topColor,
+        borderWidth: 2,
+        pointBackgroundColor: RADAR_IDS.map(id=> sc[id]===maxVal ? arcMap[id].color : topColor+'99'),
+        pointBorderColor:'#fff',
+        pointRadius: 5,
+        pointHoverRadius: 7,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:ctx=>`${ctx.raw}점 / 15점`}}
+      },
+      scales:{
+        r:{
+          min:0, max:15,
+          ticks:{stepSize:3, color:'#b4b2a9', font:{size:11}, backdropColor:'transparent'},
+          grid:{color:'rgba(0,0,0,.07)'},
+          angleLines:{color:'rgba(0,0,0,.09)'},
+          pointLabels:{color:'#5f5e5a', font:{size:12}}
+        }
+      }
+    }
+  });
+
+  // top3
+  const c=document.getElementById('t3cards');c.innerHTML='';
+  sorted.slice(0,3).forEach((a,idx)=>{
+    const d=document.createElement('div');
+    d.className='t3-card';
+    d.style.borderLeft=`4px solid ${a.color}`;
+    d.innerHTML=`
+      <div class="t3-title-row">
+        <p class="t3-title">${idx+1}위. ${a.name}<span class="t3-kw">${a.kw}</span></p>
+        <span class="t3-score">${a.score}점</span>
+      </div>
+      <p class="t3-desc">${a.desc}</p>
+      <p class="t3-shadow"><strong>그림자 측면:</strong> ${a.shadow}</p>`;
+    c.appendChild(d);
+  });
+}
+
+function restart(){if(myChart){myChart.destroy();myChart=null;}show('intro');}
+show('intro');
+</script>
+</body>
+</html>
