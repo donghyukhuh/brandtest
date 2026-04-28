@@ -48,6 +48,19 @@ h1{font-size:29px;font-weight:600;margin:0 0 1rem;color:#1a1a18;}
 
 /* results */
 .chart-wrap{position:relative;width:100%;height:480px;}
+.quadrant-lines{position:absolute;inset:30px;pointer-events:none;}
+.quadrant-lines::before,.quadrant-lines::after{content:'';position:absolute;background:#d3d1c7;}
+.quadrant-lines::before{left:50%;top:0;bottom:0;width:1px;transform:translateX(-.5px);}
+.quadrant-lines::after{top:50%;left:0;right:0;height:1px;transform:translateY(-.5px);}
+.quad-label{position:absolute;z-index:2;background:rgba(255,255,255,.86);border:1px solid #e8e6df;border-radius:8px;padding:.35rem .5rem;font-size:14px;line-height:1.35;color:#5f5e5a;max-width:44%;}
+.quad-top-left{left:6px;top:6px;}
+.quad-top-right{right:6px;top:6px;text-align:right;}
+.quad-bottom-left{left:6px;bottom:6px;}
+.quad-bottom-right{right:6px;bottom:6px;text-align:right;}
+.archetype-group{background:#fff;border:1px solid #e8e6df;border-radius:12px;padding:1rem 1.25rem;margin:.75rem 0;}
+.archetype-group h3{font-size:18px;margin-bottom:.45rem;color:#2c2c2a;}
+.archetype-group p{font-size:16px;line-height:1.65;color:#5f5e5a;}
+.archetype-group .group-members{margin-top:.45rem;font-weight:600;color:#2c2c2a;}
 .t3-card{background:#fff;border:1px solid #e8e6df;border-radius:12px;padding:1rem 1.25rem;margin-bottom:.75rem;}
 .t3-title{font-size:18px;font-weight:600;color:#2c2c2a;}
 .sec-label{font-size:17px;font-weight:700;color:#888780;margin:1.5rem 0 .75rem;}
@@ -137,7 +150,8 @@ footer{margin-top:2rem;padding-top:1.25rem;border-top:1px solid #d3d1c7;font-siz
   <h1 id="rtitle"></h1>
   <div class="card" id="topcard"></div>
   <p class="sec-label">12가지 원형 방사형 분포</p>
-  <div class="card"><div class="card-body"><div class="chart-wrap"><canvas id="achart"></canvas></div></div></div>
+  <div class="card"><div class="card-body"><div class="chart-wrap"><canvas id="achart"></canvas><div class="quadrant-lines"></div><div class="quad-label quad-top-left">자유(Freedom)를 추구하는 원형</div><div class="quad-label quad-top-right">에고(Ego/Self)를 추구하는 원형</div><div class="quad-label quad-bottom-left">소셜(Social)을 추구하는 원형</div><div class="quad-label quad-bottom-right">질서(Order)를 추구하는 원형</div></div></div></div>
+  <div id="archetypeGroups"></div>
   <p class="sec-label">상위 3개 원형 상세 해석</p>
   <div id="t3cards"></div>
   <button class="btn btn-outline" onclick="location.reload()">↺ 다시 진단하기</button>
@@ -152,18 +166,41 @@ footer{margin-top:2rem;padding-top:1.25rem;border-top:1px solid #d3d1c7;font-siz
 const DATABASE_URL = "https://script.google.com/macros/s/AKfycbzqEhWCgHOfXRHhMrrpT2e8oiQd3qow7R7SM53x3aNnzqBAgpm1hBcdlui_-HDf_ryv/exec";
 
 const ARC=[
-  {id:'innocent', name:'순수주의자', kw:'The Innocent', color:'#1D9E75', desc:'낙관주의와 순수함으로 세상을 바라봅니다.', shadow:'현실 회피적일 수 있습니다.'},
-  {id:'explorer', name:'탐험가', kw:'The Explorer', color:'#BA7517', desc:'자유와 발견을 갈망합니다.', shadow:'방랑벽이 있을 수 있습니다.'},
-  {id:'sage', name:'현자', kw:'The Sage', color:'#378ADD', desc:'지식과 진실을 추구합니다.', shadow:'행동보다 분석에 치우칠 수 있습니다.'},
-  {id:'hero', name:'영웅', kw:'The Hero', color:'#E24B4A', desc:'도전을 통해 성장합니다.', shadow:'승리에 집착할 수 있습니다.'},
-  {id:'outlaw', name:'무법자', kw:'The Outlaw', color:'#D85A30', desc:'혁명과 해방을 추구합니다.', shadow:'파괴적일 수 있습니다.'},
-  {id:'magician', name:'마술사', kw:'The Magician', color:'#7F77DD', desc:'가능성을 현실로 만듭니다.', shadow:'조종의 위험이 있습니다.'},
-  {id:'everyman', name:'친근한 이웃', kw:'The Everyman', color:'#888780', desc:'공감과 연결을 중시합니다.', shadow:'개성이 묻힐 수 있습니다.'},
-  {id:'lover', name:'연인', kw:'The Lover', color:'#D4537E', desc:'아름다움과 깊은 연결을 추구합니다.', shadow:'집착이 나타날 수 있습니다.'},
-  {id:'jester', name:'익살꾼', kw:'The Jester', color:'#EF9F27', desc:'기쁨과 유머로 순간을 밝힙니다.', shadow:'가볍게 여겨질 수 있습니다.'},
-  {id:'caregiver', name:'보호자', kw:'The Caregiver', color:'#639922', desc:'타인의 필요를 우선합니다.', shadow:'자기 희생이 지나칠 수 있습니다.'},
-  {id:'ruler', name:'통치자', kw:'The Ruler', color:'#185FA5', desc:'질서와 리더십을 발휘합니다.', shadow:'권위적일 수 있습니다.'},
-  {id:'creator', name:'창조자', kw:'The Creator', color:'#9B59B6', desc:'독창적 표현에서 의미를 찾습니다.', shadow:'완벽주의에 빠질 수 있습니다.'}
+  {id:'innocent', name:'순수주의자', kw:'The Innocent', color:'#1D9E75', summary:'희망과 선의를 믿으며 단순하고 맑은 가치를 지향합니다.', brandSymbol:'브랜드로서는 신뢰, 진정성, 긍정 에너지를 상징합니다.', shadow:'그림자 측면: 현실의 복잡성을 외면하거나 순진한 낙관에 머물 수 있습니다.'},
+  {id:'explorer', name:'탐험가', kw:'The Explorer', color:'#BA7517', summary:'자유와 발견을 갈망합니다. 자신만의 길을 개척하며 정해진 틀 밖에서 진정한 자아를 찾습니다.', brandSymbol:'브랜드로서는 모험, 자유, 진정성을 상징합니다.', shadow:'그림자 측면: 목적 없는 방랑이 되거나, 안정적 관계 구축을 어렵게 만들 수 있습니다.'},
+  {id:'sage', name:'현자', kw:'The Sage', color:'#378ADD', summary:'지식과 통찰로 본질을 이해하고 정확한 판단을 추구합니다.', brandSymbol:'브랜드로서는 전문성, 객관성, 신뢰 가능한 인사이트를 상징합니다.', shadow:'그림자 측면: 행동보다 분석에 머물거나 차갑고 비판적으로 보일 수 있습니다.'},
+  {id:'hero', name:'영웅', kw:'The Hero', color:'#E24B4A', summary:'도전과 성취를 통해 자신과 세상을 더 나은 방향으로 이끌고자 합니다.', brandSymbol:'브랜드로서는 용기, 실행력, 성과 중심의 리더십을 상징합니다.', shadow:'그림자 측면: 과도한 경쟁심과 완벽주의로 타인을 압박할 수 있습니다.'},
+  {id:'outlaw', name:'무법자', kw:'The Outlaw/Rebel', color:'#D85A30', summary:'불합리한 규범을 깨고 새로운 질서를 만들기 위해 변화를 촉발합니다.', brandSymbol:'브랜드로서는 해방, 저항, 급진적 혁신을 상징합니다.', shadow:'그림자 측면: 반항 그 자체가 목적이 되어 신뢰와 지속성을 약화시킬 수 있습니다.'},
+  {id:'magician', name:'마술사', kw:'The Magician', color:'#7F77DD', summary:'보이지 않던 가능성을 발견해 현실의 전환점을 만들어 냅니다.', brandSymbol:'브랜드로서는 변화, 비전, 변혁적 경험을 상징합니다.', shadow:'그림자 측면: 과장된 약속이나 조종적으로 인식될 위험이 있습니다.'},
+  {id:'everyman', name:'친근한 이웃', kw:'The Everyman', color:'#888780', summary:'평범한 사람들과의 공감과 소속감을 가장 중요한 가치로 둡니다.', brandSymbol:'브랜드로서는 접근성, 친밀함, 생활 밀착형 신뢰를 상징합니다.', shadow:'그림자 측면: 무난함에 머물러 차별성과 선명함이 약해질 수 있습니다.'},
+  {id:'lover', name:'연인', kw:'The Lover', color:'#D4537E', summary:'관계와 감정의 깊이를 통해 특별한 연결과 몰입을 만듭니다.', brandSymbol:'브랜드로서는 매력, 감성, 친밀한 경험을 상징합니다.', shadow:'그림자 측면: 인정 욕구나 소유욕이 강해져 균형을 잃을 수 있습니다.'},
+  {id:'jester', name:'익살꾼', kw:'The Jester', color:'#EF9F27', summary:'유머와 즐거움으로 분위기를 환기하고 사람들을 현재에 몰입시킵니다.', brandSymbol:'브랜드로서는 재미, 활력, 경쾌한 소통을 상징합니다.', shadow:'그림자 측면: 가벼움이 과해 본질적 신뢰를 잃을 수 있습니다.'},
+  {id:'caregiver', name:'보호자', kw:'The Caregiver', color:'#639922', summary:'돌봄과 헌신으로 타인의 안녕과 안전을 지키는 데 집중합니다.', brandSymbol:'브랜드로서는 배려, 책임감, 따뜻한 보호를 상징합니다.', shadow:'그림자 측면: 과도한 자기희생으로 번아웃이나 통제적 태도가 나타날 수 있습니다.'},
+  {id:'ruler', name:'통치자', kw:'The Ruler', color:'#185FA5', summary:'명확한 기준과 구조를 세워 안정적이고 품격 있는 질서를 만듭니다.', brandSymbol:'브랜드로서는 권위, 신뢰, 체계적 리더십을 상징합니다.', shadow:'그림자 측면: 경직성과 권위주의로 유연한 협업을 저해할 수 있습니다.'},
+  {id:'creator', name:'창조자', kw:'The Creator', color:'#9B59B6', summary:'독창적인 아이디어를 형태로 구현하며 새로운 가치를 탄생시킵니다.', brandSymbol:'브랜드로서는 창의성, 표현력, 미학적 완성도를 상징합니다.', shadow:'그림자 측면: 완벽주의와 자기비판으로 실행 속도가 늦어질 수 있습니다.'}
+];
+
+const ARCHETYPE_GROUPS = [
+  {
+    title:'자유(Freedom)를 추구하는 원형',
+    description:"타겟 고객의 '자유'에 대한 욕구를 자극하며, 모험과 발견을 강조합니다.",
+    members:'탐험가(The Explorer) / 현자(The Sage) / 순수주의자(The Innocent)'
+  },
+  {
+    title:'에고(Ego/Self)를 추구하는 원형',
+    description:"고객의 '자기표현'과 '특별함'을 만족시키며, 혁신과 자신감을 강조합니다.",
+    members:'창조자(The Creator) / 영웅(The Hero) / 마술사(The Magician)'
+  },
+  {
+    title:'소셜(Social)을 추구하는 원형',
+    description:"고객의 '관계'와 '소속감'을 강화하며, 즐거움과 사랑을 강조합니다.",
+    members:'연인(The Lover) / 익살꾼(The Jester) / 친근한 이웃(The Everyman)'
+  },
+  {
+    title:'질서(Order)를 추구하는 원형',
+    description:"세상에 '구조'와 '안정'을 제공하며, 전문성과 통제력을 강조합니다.",
+    members:'통치자(The Ruler) / 보호자(The Caregiver) / 무법자(The Outlaw/Rebel)'
+  }
 ];
 
 const QS=[
@@ -287,7 +324,7 @@ function showResults(){
 
   show('results');
   document.getElementById('rtitle').textContent='주요 원형: '+top.name;
-  document.getElementById('topcard').innerHTML=`<div class="card-body"><p style="font-weight:600;color:${top.color};">${top.name}</p><p>${top.desc}</p></div>`;
+  document.getElementById('topcard').innerHTML=`<div class="card-body"><p style="font-weight:600;color:${top.color};">${top.name} (${top.kw})</p><p style="margin-top:.45rem;line-height:1.7;">${top.summary}</p><p style="margin-top:.45rem;line-height:1.7;">${top.brandSymbol}</p><p style="margin-top:.45rem;line-height:1.7;color:#888780;">${top.shadow}</p></div>`;
   
   const ctx=document.getElementById('achart').getContext('2d');
   if(myChart) myChart.destroy();
@@ -305,13 +342,22 @@ function showResults(){
     options:{ scales:{ r:{ min:0, max:15 } } }
   });
 
+  const groupWrap=document.getElementById('archetypeGroups');
+  groupWrap.innerHTML='';
+  ARCHETYPE_GROUPS.forEach((group)=>{
+    const section=document.createElement('div');
+    section.className='archetype-group';
+    section.innerHTML=`<h3>${group.title}</h3><p>${group.description}</p><p class="group-members">${group.members}</p>`;
+    groupWrap.appendChild(section);
+  });
+
   const t3=document.getElementById('t3cards');
   t3.innerHTML='';
   sorted.slice(0,3).forEach((a,i)=>{
     const d=document.createElement('div');
     d.className='t3-card';
     d.style.borderLeft='4px solid '+a.color;
-    d.innerHTML=`<p class="t3-title">${i+1}위. ${a.name}</p><p style="font-size:17px;color:#5f5e5a;">${a.desc}</p>`;
+    d.innerHTML=`<p class="t3-title">${i+1}위. ${a.name} (${a.kw})</p><p style="font-size:17px;color:#5f5e5a;line-height:1.7;margin-top:.4rem;">${a.summary}</p><p style="font-size:16px;color:#5f5e5a;line-height:1.65;margin-top:.35rem;">${a.brandSymbol}</p><p style="font-size:16px;color:#888780;line-height:1.65;margin-top:.35rem;">${a.shadow}</p>`;
     t3.appendChild(d);
   });
 }
