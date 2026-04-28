@@ -6,30 +6,30 @@
 <title>브랜드 원형 진단 | Brand Archetype Test</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:#f1efe8;color:#2c2c2a;min-height:100vh;display:flex;justify-content:center;padding:2rem 1rem;}
+body{font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:#f1efe8;color:#2c2c2a;min-height:100vh;display:flex;justify-content:center;padding:2rem 1rem;font-size:130%;}
 #app{width:100%;max-width:680px;padding:2rem 0;}
 
 /* typography */
-h1{font-size:22px;font-weight:600;margin:0 0 1rem;color:#1a1a18;}
-.badge{font-size:12px;color:#888780;margin:0 0 .4rem;letter-spacing:.02em;}
+h1{font-size:29px;font-weight:600;margin:0 0 1rem;color:#1a1a18;}
+.badge{font-size:16px;color:#888780;margin:0 0 .4rem;letter-spacing:.02em;}
 
 /* card */
 .card{background:#fff;border:1px solid #d3d1c7;border-radius:14px;overflow:hidden;margin-bottom:1rem;}
 .card-body{padding:1.25rem 1.5rem;}
-.card-foot{padding:.75rem 1.5rem;background:#f7f6f0;border-top:1px solid #e8e6df;font-size:13px;color:#888780;line-height:1.6;}
+.card-foot{padding:.75rem 1.5rem;background:#f7f6f0;border-top:1px solid #e8e6df;font-size:17px;color:#888780;line-height:1.6;}
 
 /* input styles */
 .input-group{margin-bottom:1.2rem;}
-.input-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#5f5e5a;}
-.input-field{width:100%;padding:12px;border:1px solid #d3d1c7;border-radius:8px;font-size:14px;font-family:inherit;}
+.input-group label{display:block;font-size:17px;font-weight:600;margin-bottom:6px;color:#5f5e5a;}
+.input-field{width:100%;padding:12px;border:1px solid #d3d1c7;border-radius:8px;font-size:18px;font-family:inherit;}
 .input-field:focus{outline:none;border-color:#2c2c2a;}
 
 /* info box */
 .info-box{background:#e9f2fc;border:1px solid #b5d4f4;border-radius:10px;padding:.9rem 1.1rem;margin-bottom:1.25rem;}
-.info-box p{font-size:14px;color:#185fa5;line-height:1.7;}
+.info-box p{font-size:18px;color:#185fa5;line-height:1.7;}
 
 /* buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 22px;font-size:14px;font-family:inherit;cursor:pointer;border-radius:8px;transition:all .15s;}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 22px;font-size:18px;font-family:inherit;cursor:pointer;border-radius:8px;transition:all .15s;}
 .btn-primary{background:#2c2c2a;color:#fff;border:none;}
 .btn-primary:hover{background:#444441;}
 .btn-outline{background:#fff;color:#2c2c2a;border:1px solid #b4b2a9;}
@@ -38,20 +38,20 @@ h1{font-size:22px;font-weight:600;margin:0 0 1rem;color:#1a1a18;}
 .prog-wrap{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;}
 .prog-track{flex:1;height:4px;background:#d3d1c7;border-radius:2px;}
 .prog-fill{height:100%;background:#2c2c2a;border-radius:2px;transition:width .3s;}
-.prog-label{font-size:12px;color:#888780;white-space:nowrap;min-width:50px;text-align:right;}
+.prog-label{font-size:16px;color:#888780;white-space:nowrap;min-width:50px;text-align:right;}
 
 /* likert */
 .likert-row{display:flex;gap:6px;margin-bottom:.5rem;}
-.lbtn{flex:1;padding:10px 6px;font-size:13px;cursor:pointer;background:#f7f6f0;border:1px solid #d3d1c7;border-radius:8px;color:#888780;text-align:center;transition:all .15s;}
+.lbtn{flex:1;padding:10px 6px;font-size:17px;cursor:pointer;background:#f7f6f0;border:1px solid #d3d1c7;border-radius:8px;color:#888780;text-align:center;transition:all .15s;}
 .lbtn.sel{background:#e9f2fc;color:#185fa5;border-color:#85b7eb;font-weight:600;}
-.axis{display:flex;justify-content:space-between;font-size:11px;color:#b4b2a9;margin-bottom:1.25rem;}
+.axis{display:flex;justify-content:space-between;font-size:14px;color:#b4b2a9;margin-bottom:1.25rem;}
 
 /* results */
 .chart-wrap{position:relative;width:100%;height:480px;}
 .t3-card{background:#fff;border:1px solid #e8e6df;border-radius:12px;padding:1rem 1.25rem;margin-bottom:.75rem;}
-.t3-title{font-size:14px;font-weight:600;color:#2c2c2a;}
-.sec-label{font-size:13px;font-weight:700;color:#888780;margin:1.5rem 0 .75rem;}
-footer{margin-top:2rem;padding-top:1.25rem;border-top:1px solid #d3d1c7;font-size:12px;color:#b4b2a9;text-align:center;}
+.t3-title{font-size:18px;font-weight:600;color:#2c2c2a;}
+.sec-label{font-size:17px;font-weight:700;color:#888780;margin:1.5rem 0 .75rem;}
+footer{margin-top:2rem;padding-top:1.25rem;border-top:1px solid #d3d1c7;font-size:16px;color:#b4b2a9;text-align:center;}
 </style>
 </head>
 <body>
@@ -60,27 +60,56 @@ footer{margin-top:2rem;padding-top:1.25rem;border-top:1px solid #d3d1c7;font-siz
 <div id="intro">
   <p class="badge">Brand Archetype Assessment</p>
   <h1>나는 어떤 브랜드 원형인가?</h1>
-  <p style="font-size:15px;color:#5f5e5a;line-height:1.75;margin-bottom:1.5rem;">칼 융의 심리학에 기반한 12가지 브랜드 원형 진단입니다.<br>진단 결과는 입력하신 정보와 함께 안전하게 전송됩니다.</p>
-  
+  <p style="font-size:20px;color:#5f5e5a;line-height:1.85;margin-bottom:1.5rem;">
+    창업을 위한 똑같은 조건과 상황에서도 우리 모두는 다른 결과물을 만들어냅니다.<br>
+    그 이유는 우리는 모두 다른 지향점과 목적, 성향을 가졌기 때문입니다.<br>
+    브랜드창업의 시작은, '자기다움의 발견'에서부터 시작됩니다.<br>
+    그러나 대부분의 창업자분들은 '창업아이템 고도화'에 온 신경이 가 있고,<br>
+    나(브랜드)의 역량과 성향은 크게 고려하지 않은채 창업에 발을 내딛죠.<br><br>
+    이에 우리는 36개의 질문을 통해 칼 융(Carl Jung)의 심리학에 기반한<br>
+    12가지 브랜드 원형을 안내해드립니다.<br><br>
+    본 질문은 아래와 같이 세가지의 레이어로 여러분께 질문을 던집니다.<br>
+    인지 레이어 "세상을 어떻게 보는가" (가치관, 믿음)<br>
+    동기 레이어 "무엇이 에너지를 주는가" (욕구, 원동력)<br>
+    행동 레이어 "어떻게 행동하는가" (실제 패턴)<br><br>
+    본 진단을 통해 브랜드의 지속가능한 성장을 이뤄가실 수 있도록 로셜리티가 응원합니다.<br>
+    감사합니다.<br><br>
+    제작 : 임팩트브랜딩 커뮤니티 (주)로셜리티 허동혁 대표<br>
+    <a href="https://brunch.co.kr/@lociality" target="_blank" rel="noopener noreferrer">https://brunch.co.kr/@lociality</a>
+  </p>
+
+  <div class="info-box">
+    <p><strong>응답방법</strong><br>각 문항을 읽고 현재 나의 생각과 행동에 가장 가까운 점수를 1점(전혀 아니다)~5점(매우 그렇다)으로 선택해 주세요.</p>
+  </div>
+
   <div class="card">
     <div class="card-body">
       <div class="input-group">
-        <label>브랜드명 / 성함</label>
-        <input type="text" id="userName" class="input-field" placeholder="예: 로셜리티 / 홍길동">
+        <label>소속</label>
+        <input type="text" id="userAffiliation" class="input-field" placeholder="예: 로셜리티">
+      </div>
+      <div class="input-group">
+        <label>이름</label>
+        <input type="text" id="userName" class="input-field" placeholder="예: 홍길동">
+      </div>
+      <div class="input-group">
+        <label>업종</label>
+        <input type="text" id="userIndustry" class="input-field" placeholder="예: 교육 서비스업">
       </div>
       <div class="input-group">
         <label>연락처</label>
         <input type="text" id="userContact" class="input-field" placeholder="예: 010-1234-5678">
       </div>
       <div class="input-group" style="margin-bottom:0;">
-        <label>이메일</label>
-        <input type="email" id="userEmail" class="input-field" placeholder="예: example@mail.com">
+        <label style="display:flex;align-items:flex-start;gap:8px;">
+          <input type="checkbox" id="privacyConsent" style="margin-top:5px;">
+          <span>개인정보 수집 및 활용에 동의합니다. (필수)</span>
+        </label>
       </div>
     </div>
   </div>
 
   <button class="btn btn-primary" onclick="validateAndStart()">진단 시작하기 →</button>
-  <p style="font-size:12px;color:#b4b2a9;margin-top:12px;text-align:center;">제작: (주)로셜리티 허동혁 대표</p>
 </div>
 
 <div id="question" style="display:none;">
@@ -90,12 +119,12 @@ footer{margin-top:2rem;padding-top:1.25rem;border-top:1px solid #d3d1c7;font-siz
   </div>
   <div class="card">
     <div class="card-body">
-      <p id="qnum" style="font-size:11px;color:#b4b2a9;margin-bottom:8px;"></p>
-      <p id="qtext" style="font-size:16px;line-height:1.75;"></p>
+      <p id="qnum" style="font-size:14px;color:#b4b2a9;margin-bottom:8px;"></p>
+      <p id="qtext" style="font-size:21px;line-height:1.75;"></p>
     </div>
     <div style="padding:1rem 1.5rem 0;">
       <div class="likert-row" id="lrow"></div>
-      <div class="axis"><span>전혀 아니다</span><span>매우 그렇다</span></div>
+      <div class="axis"><span>1점 (전혀 아니다)</span><span>5점 (매우 그렇다)</span></div>
     </div>
     <div class="card-foot">
       <button class="btn btn-outline" id="bprev" onclick="prevQ()">← 이전</button>
@@ -176,7 +205,7 @@ const QS=[
   {a:'creator', t:'완전히 독창적이고 의미 있는 것을 세상에 남기고 싶다는 욕구가 강하다.'},
 ];
 
-let userData = {name:'', contact:'', email:''};
+let userData = {affiliation:'', name:'', industry:'', contact:'', privacyConsent:false};
 let ans = new Array(QS.length).fill(null);
 let cur = 0;
 let myChart = null;
@@ -184,13 +213,29 @@ let myChart = null;
 function show(id){['intro','question','results'].forEach(s=>document.getElementById(s).style.display=(s===id?'block':'none'));}
 
 function validateAndStart(){
+  const a=document.getElementById('userAffiliation').value.trim();
   const n=document.getElementById('userName').value.trim();
+  const i=document.getElementById('userIndustry').value.trim();
   const c=document.getElementById('userContact').value.trim();
-  const e=document.getElementById('userEmail').value.trim();
-  if(!n || !c || !e){ alert('모든 정보를 입력해 주세요.'); return; }
-  userData = {name:n, contact:c, email:e};
+  const p=document.getElementById('privacyConsent').checked;
+  if(!a || !n || !i || !c || !p){ alert('소속, 이름, 업종, 연락처를 입력하고 개인정보 수집 동의에 체크해 주세요.'); return; }
+  userData = {affiliation:a, name:n, industry:i, contact:c, privacyConsent:p};
+  sendPersonalInfo();
   show('question');
   renderQ();
+}
+
+function sendPersonalInfo(){
+  fetch(DATABASE_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      action: "personal_info",
+      ...userData,
+      timestamp: new Date().toLocaleString()
+    })
+  });
 }
 
 function renderQ(){
@@ -201,7 +246,7 @@ function renderQ(){
   document.getElementById('ptext').textContent=Math.round((cur/QS.length)*100)+'%';
   const row=document.getElementById('lrow');
   row.innerHTML='';
-  ['전혀 아니다','아니다','보통이다','그렇다','매우 그렇다'].forEach((lb,i)=>{
+  ['1점','2점','3점','4점','5점'].forEach((lb,i)=>{
     const b=document.createElement('button');
     b.className='lbtn'+(ans[cur]===i+1?' sel':'');
     b.textContent=lb;
@@ -231,8 +276,10 @@ function showResults(){
     mode: "no-cors",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
+      action: "survey_result",
       ...userData,
       topArchetype: top.name,
+      answers: ans,
       scores: sc,
       timestamp: new Date().toLocaleString()
     })
@@ -264,7 +311,7 @@ function showResults(){
     const d=document.createElement('div');
     d.className='t3-card';
     d.style.borderLeft='4px solid '+a.color;
-    d.innerHTML=`<p class="t3-title">${i+1}위. ${a.name}</p><p style="font-size:13px;color:#5f5e5a;">${a.desc}</p>`;
+    d.innerHTML=`<p class="t3-title">${i+1}위. ${a.name}</p><p style="font-size:17px;color:#5f5e5a;">${a.desc}</p>`;
     t3.appendChild(d);
   });
 }
