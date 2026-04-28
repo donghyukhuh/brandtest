@@ -48,16 +48,27 @@ h1{font-size:29px;font-weight:600;margin:0 0 1rem;color:#1a1a18;}
 
 /* results */
 .chart-wrap{position:relative;width:100%;height:480px;}
-.quadrant-lines{position:absolute;inset:30px;pointer-events:none;}
+.chart-core{position:absolute;inset:30px;}
+.chart-core canvas{width:100% !important;height:100% !important;}
+.quadrant-bg{position:absolute;inset:0;pointer-events:none;border-radius:50%;overflow:hidden;}
+.quadrant-bg .q{position:absolute;width:50%;height:50%;}
+.quadrant-bg .q1{left:50%;top:0;background:rgba(34,137,104,.10);}
+.quadrant-bg .q2{left:0;top:0;background:rgba(124,90,197,.10);}
+.quadrant-bg .q3{left:0;top:50%;background:rgba(211,91,126,.11);}
+.quadrant-bg .q4{left:50%;top:50%;background:rgba(35,97,164,.10);}
+.quadrant-lines{position:absolute;inset:0;pointer-events:none;}
 .quadrant-lines::before,.quadrant-lines::after{content:'';position:absolute;background:#d3d1c7;}
 .quadrant-lines::before{left:50%;top:0;bottom:0;width:1px;transform:translateX(-.5px);}
 .quadrant-lines::after{top:50%;left:0;right:0;height:1px;transform:translateY(-.5px);}
-.quad-label{position:absolute;z-index:2;background:rgba(255,255,255,.86);border:1px solid #e8e6df;border-radius:8px;padding:.35rem .5rem;font-size:14px;line-height:1.35;color:#5f5e5a;max-width:44%;}
-.quad-top-left{left:6px;top:6px;}
-.quad-top-right{right:6px;top:6px;text-align:right;}
-.quad-bottom-left{left:6px;bottom:6px;}
-.quad-bottom-right{right:6px;bottom:6px;text-align:right;}
+.quad-label{position:absolute;z-index:2;border:1px solid transparent;border-radius:8px;padding:.35rem .5rem;font-size:14px;line-height:1.35;color:#2c2c2a;max-width:44%;font-weight:600;}
+.quad-top-left{left:6px;top:6px;background:#f1fbf6;border-color:#bfe6d7;}
+.quad-top-right{right:6px;top:6px;text-align:right;background:#f5f1fe;border-color:#d5c7f5;}
+.quad-bottom-left{left:6px;bottom:6px;background:#fff2f7;border-color:#f5c5d6;}
+.quad-bottom-right{right:6px;bottom:6px;text-align:right;background:#f0f6ff;border-color:#bdd5f3;}
 .archetype-group{background:#fff;border:1px solid #e8e6df;border-radius:12px;padding:1rem 1.25rem;margin:.75rem 0;}
+.archetype-group.themed h3{margin-bottom:.45rem;}
+.archetype-group.themed p{color:#454543;}
+.archetype-group.themed .group-members{color:#2c2c2a;}
 .archetype-group h3{font-size:18px;margin-bottom:.45rem;color:#2c2c2a;}
 .archetype-group p{font-size:16px;line-height:1.65;color:#5f5e5a;}
 .archetype-group .group-members{margin-top:.45rem;font-weight:600;color:#2c2c2a;}
@@ -150,7 +161,7 @@ footer{margin-top:2rem;padding-top:1.25rem;border-top:1px solid #d3d1c7;font-siz
   <h1 id="rtitle"></h1>
   <div class="card" id="topcard"></div>
   <p class="sec-label">12가지 원형 방사형 분포</p>
-  <div class="card"><div class="card-body"><div class="chart-wrap"><canvas id="achart"></canvas><div class="quadrant-lines"></div><div class="quad-label quad-top-left">자유(Freedom)를 추구하는 원형</div><div class="quad-label quad-top-right">에고(Ego/Self)를 추구하는 원형</div><div class="quad-label quad-bottom-left">소셜(Social)을 추구하는 원형</div><div class="quad-label quad-bottom-right">질서(Order)를 추구하는 원형</div></div></div></div>
+  <div class="card"><div class="card-body"><div class="chart-wrap"><div class="chart-core"><div class="quadrant-bg"><div class="q q1"></div><div class="q q2"></div><div class="q q3"></div><div class="q q4"></div></div><canvas id="achart"></canvas><div class="quadrant-lines"></div></div><div class="quad-label quad-top-left">자유(Freedom)를 추구하는 원형</div><div class="quad-label quad-top-right">에고(Ego/Self)를 추구하는 원형</div><div class="quad-label quad-bottom-left">소셜(Social)을 추구하는 원형</div><div class="quad-label quad-bottom-right">질서(Order)를 추구하는 원형</div></div></div></div>
   <div id="archetypeGroups"></div>
   <p class="sec-label">상위 3개 원형 상세 해석</p>
   <div id="t3cards"></div>
@@ -184,22 +195,26 @@ const ARCHETYPE_GROUPS = [
   {
     title:'자유(Freedom)를 추구하는 원형',
     description:"타겟 고객의 '자유'에 대한 욕구를 자극하며, 모험과 발견을 강조합니다.",
-    members:'탐험가(The Explorer) / 현자(The Sage) / 순수주의자(The Innocent)'
+    members:'탐험가(The Explorer) / 현자(The Sage) / 순수주의자(The Innocent)',
+    theme:{bg:'#f1fbf6',border:'#bfe6d7',accent:'#228968'}
   },
   {
     title:'에고(Ego/Self)를 추구하는 원형',
     description:"고객의 '자기표현'과 '특별함'을 만족시키며, 혁신과 자신감을 강조합니다.",
-    members:'창조자(The Creator) / 영웅(The Hero) / 마술사(The Magician)'
+    members:'창조자(The Creator) / 영웅(The Hero) / 마술사(The Magician)',
+    theme:{bg:'#f5f1fe',border:'#d5c7f5',accent:'#7c5ac5'}
   },
   {
     title:'소셜(Social)을 추구하는 원형',
     description:"고객의 '관계'와 '소속감'을 강화하며, 즐거움과 사랑을 강조합니다.",
-    members:'연인(The Lover) / 익살꾼(The Jester) / 친근한 이웃(The Everyman)'
+    members:'연인(The Lover) / 익살꾼(The Jester) / 친근한 이웃(The Everyman)',
+    theme:{bg:'#fff2f7',border:'#f5c5d6',accent:'#d35b7e'}
   },
   {
     title:'질서(Order)를 추구하는 원형',
     description:"세상에 '구조'와 '안정'을 제공하며, 전문성과 통제력을 강조합니다.",
-    members:'통치자(The Ruler) / 보호자(The Caregiver) / 무법자(The Outlaw/Rebel)'
+    members:'통치자(The Ruler) / 보호자(The Caregiver) / 무법자(The Outlaw/Rebel)',
+    theme:{bg:'#f0f6ff',border:'#bdd5f3',accent:'#2361a4'}
   }
 ];
 
@@ -339,15 +354,22 @@ function showResults(){
         borderWidth:2
       }]
     },
-    options:{ scales:{ r:{ min:0, max:15 } } }
+    options:{
+      maintainAspectRatio:false,
+      scales:{ r:{ min:0, max:15, startAngle:15, angleLines:{color:'#d5d3ca'}, grid:{color:'#dddcd4'}, pointLabels:{color:'#5f5e5a',font:{size:13,weight:'600'}} } },
+      plugins:{ legend:{display:false} }
+    }
   });
 
   const groupWrap=document.getElementById('archetypeGroups');
   groupWrap.innerHTML='';
   ARCHETYPE_GROUPS.forEach((group)=>{
     const section=document.createElement('div');
-    section.className='archetype-group';
-    section.innerHTML=`<h3>${group.title}</h3><p>${group.description}</p><p class="group-members">${group.members}</p>`;
+    section.className='archetype-group themed';
+    section.style.background=group.theme.bg;
+    section.style.borderColor=group.theme.border;
+    section.style.borderLeft='5px solid '+group.theme.accent;
+    section.innerHTML=`<h3 style="color:${group.theme.accent};">${group.title}</h3><p>${group.description}</p><p class="group-members">${group.members}</p>`;
     groupWrap.appendChild(section);
   });
 
