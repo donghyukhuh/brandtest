@@ -84,7 +84,7 @@ footer{margin-top:2rem;padding-top:1.25rem;border-top:1px solid #d3d1c7;font-siz
 <div id="intro">
   <p class="badge">Brand Archetype Assessment</p>
   <h1>나는 어떤 브랜드 원형인가?</h1>
-  <p style="font-size:20px;color:#5f5e5a;line-height:1.85;margin-bottom:1.5rem;">
+  <p style="font-size:17px;color:#5f5e5a;line-height:1.85;margin-bottom:1.5rem;">
     창업을 위한 똑같은 조건과 상황에서도 우리 모두는 다른 결과물을 만들어냅니다.<br>
     그 이유는 우리는 모두 다른 지향점과 목적, 성향을 가졌기 때문입니다.<br>
     브랜드창업의 시작은, '자기다움의 발견'에서부터 시작됩니다.<br>
@@ -122,7 +122,8 @@ footer{margin-top:2rem;padding-top:1.25rem;border-top:1px solid #d3d1c7;font-siz
       </div>
       <div class="input-group">
         <label>연락처</label>
-        <input type="text" id="userContact" class="input-field" placeholder="예: 010-1234-5678">
+        <input type="text" id="userContact" class="input-field" placeholder="예: 01012345678" inputmode="numeric" maxlength="11" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
+        <p style="margin-top:6px;font-size:14px;color:#888780;">숫자만 입력해 주세요. ( - 없이 입력 )</p>
       </div>
       <div class="input-group" style="margin-bottom:0;">
         <label style="display:flex;align-items:flex-start;gap:8px;">
@@ -271,6 +272,7 @@ function validateAndStart(){
   const c=document.getElementById('userContact').value.trim();
   const p=document.getElementById('privacyConsent').checked;
   if(!a || !n || !i || !c || !p){ alert('소속, 이름, 업종, 연락처를 입력하고 개인정보 수집 동의에 체크해 주세요.'); return; }
+  if(!/^[0-9]+$/.test(c)){ alert('연락처는 숫자만 입력해 주세요.'); return; }
   userData = {affiliation:a, name:n, industry:i, contact:c, privacyConsent:p};
   sendPersonalInfo();
   show('question');
@@ -284,7 +286,10 @@ function sendPersonalInfo(){
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
       action: "personal_info",
-      ...userData,
+      name: userData.name,
+      affiliation: userData.affiliation,
+      industry: userData.industry,
+      contact: userData.contact,
       timestamp: new Date().toLocaleString()
     })
   });
@@ -329,8 +334,12 @@ function showResults(){
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
       action: "survey_result",
-      ...userData,
+      name: userData.name,
+      affiliation: userData.affiliation,
+      industry: userData.industry,
+      contact: userData.contact,
       topArchetype: top.name,
+      대표원형: top.name,
       answers: ans,
       scores: sc,
       timestamp: new Date().toLocaleString()
